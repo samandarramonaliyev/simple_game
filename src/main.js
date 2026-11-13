@@ -12,6 +12,7 @@ import { buildInteriors } from './world/interiors.js';
 import { initInteract, updateInteract } from './systems/interact.js';
 import { initDialogue } from './npc/dialogue.js';
 import { spawnNpcs, updateNpcs } from './npc/npcs.js';
+import { initMissions } from './systems/missions.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -46,6 +47,7 @@ async function boot() {
   buildInteriors(scene);
   initDialogue();
   spawnNpcs(scene);
+  const missions = initMissions(scene);
 
   setLoad(100, 'Tayyor!');
   await tick();
@@ -61,6 +63,7 @@ async function boot() {
     updateDayNight(dt, scene, player.pos());
     updateNpcs(dt);
     updateInteract();
+    missions.update(dt);
     hud.update();
     updateMinimap();
   });
