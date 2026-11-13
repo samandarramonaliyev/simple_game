@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Shahar Himoyachisi</title>
+  <link rel="stylesheet" href="./src/ui/styles.css" />
+</head>
+<body>
+  <div id="app"></div>
+
+  <!-- Loading screen -->
+  <div id="loading" class="fullscreen">
+    <div class="load-inner">
+      <h1 class="neon">SHAHAR HIMOYACHISI</h1>
+      <p class="subtitle">Shahar tizimlarini xakerlardan himoya qil!</p>
+      <div class="loadbar"><div id="loadingBar"></div></div>
+      <p id="loadingText">Yuklanmoqda...</p>
+    </div>
+  </div>
+
+  <!-- Title menu -->
+  <div id="title" class="fullscreen hidden">
+    <div class="title-inner">
+      <h1 class="neon">SHAHAR HIMOYACHISI</h1>
+      <p class="subtitle">Siz — yosh dasturchi. Shaharni xaker hujumlaridan himoya qiling!</p>
+      <div class="menu-col">
+        <button id="btnContinue" class="mbtn hidden">Davom etish</button>
+        <button id="btnStart" class="mbtn">Yangi o'yin</button>
+        <button id="btnHelp" class="mbtn">Qo'llanma</button>
+        <button id="btnTitleSettings" class="mbtn">Sozlamalar</button>
+      </div>
+      <div id="diffRow" class="hidden">
+        <p>Qiyinlikni tanlang:</p>
+        <button class="mbtn small" data-diff="oson">Oson</button>
+        <button class="mbtn small" data-diff="orta">O'rta</button>
+        <button class="mbtn small" data-diff="qiyin">Qiyin</button>
+      </div>
+      <div id="helpPanel" class="hidden panel-box">
+        <h3>Boshqaruv</h3>
+        <ul>
+          <li><b>WASD</b> — yurish, <b>Shift</b> — yugurish, <b>Space</b> — sakrash</li>
+          <li><b>Sichqoncha</b> — kamera (ekranni bosing), <b>G'ildirak</b> — masofa</li>
+          <li><b>E</b> — muloqot / eshik / obyekt</li>
+          <li><b>J</b> yoki <b>chap tugma</b> — mushtlash, <b>Ctrl</b> — chap berish (dash)</li>
+          <li><b>R</b> — skuter (do'kondan sotib olingach)</li>
+          <li><b>M</b> — katta xarita, <b>Esc</b> — pauza</li>
+          <li>Jangda: <b>buyruq yozing</b> va <b>Enter</b> bosing. Harakat: <b>strelkalar</b>.</li>
+        </ul>
+        <button class="mbtn small" id="btnHelpClose">Yopish</button>
+      </div>
+      <p class="credit">Barcha grafika va ovozlar kod bilan yaratilgan · Three.js</p>
+    </div>
+  </div>
+
+  <!-- HUD -->
+  <div id="hud" class="hidden">
+    <div id="topbar">
+      <div class="tb-item" id="tbLevel">
+        <span id="statLevel">1-daraja</span>
+        <div class="bar tiny"><div id="xpFill"></div></div>
+      </div>
+      <div class="tb-item"><span class="coin-ico">⬤</span> <span id="statCoins">0</span></div>
+      <div class="tb-item" id="tbTrust">
+        <span>Shahar ishonchi</span>
+        <div class="bar tiny trust"><div id="trustFill"></div></div>
+      </div>
+      <div class="tb-item"><span id="statClock">09:00</span> · <span id="statDay">1-kun</span></div>
+    </div>
+    <div id="vitals">
+      <div class="bar hp"><div id="hpFill"></div></div>
+      <div class="bar sh"><div id="shieldFill"></div></div>
+      <div id="buffsRow"></div>
+    </div>
+    <div id="missionBanner" class="hidden">
+      <div class="mb-title">⚠ XAKER HUJUMI</div>
+      <div id="missionName">—</div>
+      <div><span id="missionTimer">90</span>s · <span id="missionDist">0m</span></div>
+    </div>
+    <div id="prompt" class="hidden"></div>
+    <div id="toasts"></div>
+    <div id="combo" class="hidden">x1</div>
+    <canvas id="minimap" width="200" height="200"></canvas>
+  </div>
+
+  <!-- Phone notification -->
+  <div id="phonePopup" class="hidden">
+    <div class="phone-head">📱 Xabar</div>
+    <div id="phoneText"></div>
+    <button class="mbtn small" id="phoneOk">Tushundim</button>
+  </div>
+
+  <!-- Phishing popup -->
+  <div id="phishPopup" class="hidden">
+    <div class="phone-head">📩 Yangi xabar</div>
+    <div id="phishBody"></div>
+    <div class="row">
+      <button class="mbtn small danger" id="phishAccept">Ochish</button>
+      <button class="mbtn small" id="phishReject">RAD ETISH</button>
+    </div>
+  </div>
+
+  <!-- Combat terminal -->
+  <div id="terminal" class="hidden">
+    <div id="termLog"></div>
+    <div id="termHints"></div>
+    <div id="termInputRow">
+      <span class="term-user">himoyachi@shahar:~$</span>
+      <span id="termInput"></span><span class="caret">█</span>
+    </div>
+    <div id="termLock" class="hidden">🔒 BUYRUQLAR QULFLANDI!</div>
+  </div>
+
+  <!-- Dialogue -->
+  <div id="dialogue" class="hidden">
+    <div id="dlgName"></div>
+    <div id="dlgText"></div>
+    <div id="dlgOpts"></div>
+  </div>
+
+  <!-- Generic panel (shop/cafe/barber/library/home PC) -->
+  <div id="panel" class="hidden">
+    <div class="panel-head"><span id="panelTitle"></span><button id="panelClose">✕</button></div>
+    <div id="panelBody"></div>
+  </div>
+
+  <!-- Minigame modal -->
+  <div id="minigame" class="hidden">
+    <div class="panel-head"><span id="mgTitle"></span></div>
+    <div id="mgBody"></div>
+  </div>
+
+  <!-- Pause menu -->
+  <div id="pauseMenu" class="fullscreen hidden">
+    <div class="pause-inner">
+      <h2>PAUZA</h2>
+      <div id="pauseTabs">
+        <button data-tab="davom" class="mbtn small">Davom etish</button>
+        <button data-tab="xarita" class="mbtn small">Xarita</button>
+        <button data-tab="vazifa" class="mbtn small">Vazifalar</button>
+        <button data-tab="yutuq" class="mbtn small">Yutuqlar</button>
+        <button data-tab="sozlama" class="mbtn small">Sozlamalar</button>
+        <button data-tab="saqlash" class="mbtn small">Saqlash</button>
+      </div>
+      <div id="pauseBody"></div>
+    </div>
+  </div>
+
+  <!-- Big map -->
+  <div id="mapOverlay" class="fullscreen hidden">
+    <canvas id="bigmap" width="640" height="640"></canvas>
+    <p class="map-hint">Yopish: M yoki Esc</p>
+  </div>
+
+  <!-- Tutorial -->
+  <div id="tutorial" class="hidden"><div id="tutText"></div></div>
+
+  <!-- Mobile controls -->
+  <div id="mobileUI" class="hidden">
+    <div id="joyZone"><div id="joyKnob"></div></div>
+    <div id="mobBtns">
+      <button class="mob-btn" id="mbJump">⤒</button>
+      <button class="mob-btn" id="mbAct">E</button>
+      <button class="mob-btn" id="mbRun">🏃</button>
+      <button class="mob-btn" id="mbMelee">👊</button>
+    </div>
+    <input id="mobCmdInput" class="hidden" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="buyruq yozing..." />
+  </div>
+
+  <!-- FX overlays -->
+  <div id="fade"></div>
+  <div id="glitch" class="hidden"></div>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
