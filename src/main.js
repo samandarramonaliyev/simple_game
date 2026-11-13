@@ -13,6 +13,8 @@ import { initInteract, updateInteract } from './systems/interact.js';
 import { initDialogue } from './npc/dialogue.js';
 import { spawnNpcs, updateNpcs } from './npc/npcs.js';
 import { initMissions } from './systems/missions.js';
+import { initTerminal } from './ui/terminal.js';
+import { initCombat } from './combat/combat.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -48,6 +50,8 @@ async function boot() {
   initDialogue();
   spawnNpcs(scene);
   const missions = initMissions(scene);
+  initTerminal();
+  const combat = initCombat();
 
   setLoad(100, 'Tayyor!');
   await tick();
@@ -64,6 +68,7 @@ async function boot() {
     updateNpcs(dt);
     updateInteract();
     missions.update(dt);
+    combat.update(dt);
     hud.update();
     updateMinimap();
   });
