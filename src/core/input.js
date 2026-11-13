@@ -65,9 +65,10 @@ export function initInput(canvas) {
     switch (e.code) {
       case 'KeyE': if (Game.mode === 'play') emit('interact'); break;
       case 'Space':
-        if (Game.mode === 'play' || Game.mode === 'combat') { emit('jump'); e.preventDefault(); }
+        // in combat, space belongs to the terminal (commands contain spaces)
+        if (Game.mode === 'play') { emit('jump'); e.preventDefault(); }
         break;
-      case 'KeyJ': if (Game.mode === 'play' || Game.mode === 'combat') emit('melee'); break;
+      case 'KeyJ': if (Game.mode === 'play') emit('melee'); break;
       case 'ControlLeft': case 'ControlRight':
         if (Game.mode === 'play' || Game.mode === 'combat') { emit('dodge'); e.preventDefault(); }
         break;

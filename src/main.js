@@ -19,6 +19,10 @@ import { initProgression } from './systems/progression.js';
 import { initPanels } from './ui/panels.js';
 import { initQuests } from './systems/quests.js';
 import { initMinigames } from './combat/minigames.js';
+import { initAudio } from './systems/audio.js';
+import { initSave } from './systems/save.js';
+import { initMenus } from './ui/menus.js';
+import { initMobile } from './ui/mobile.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -60,16 +64,19 @@ async function boot() {
   initPanels();
   initQuests(scene);
   initMinigames();
+  initAudio();
+  initSave();
+  const menus = initMenus();
+  const mobile = initMobile();
 
   setLoad(100, 'Tayyor!');
   await tick();
 
   $('loading').classList.add('hidden');
-  hud.show();
-  Game.mode = 'play';
-  hud.toast('Xush kelibsiz! Harakat: WASD, kamera: sichqoncha', 'good');
+  menus.showTitle();
 
   startLoop((dt) => {
+    if (Game.mode === 'title') return;
     updatePlayer(player, dt);
     updateCamera(rig, dt);
     updateDayNight(dt, scene, player.pos());
@@ -79,6 +86,7 @@ async function boot() {
     combat.update(dt);
     hud.update();
     updateMinimap();
+    mobile.update();
   });
 }
 
