@@ -8,6 +8,10 @@ import { createPlayer, updatePlayer } from './player/player.js';
 import { initCamera, updateCamera } from './player/camera.js';
 import { initHud } from './ui/hud.js';
 import { initMinimap, updateMinimap } from './ui/minimap.js';
+import { buildInteriors } from './world/interiors.js';
+import { initInteract, updateInteract } from './systems/interact.js';
+import { initDialogue } from './npc/dialogue.js';
+import { spawnNpcs, updateNpcs } from './npc/npcs.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -36,6 +40,13 @@ async function boot() {
   const hud = initHud();
   initMinimap();
 
+  setLoad(85, 'Shahar jonlanmoqda...');
+  await tick();
+  initInteract();
+  buildInteriors(scene);
+  initDialogue();
+  spawnNpcs(scene);
+
   setLoad(100, 'Tayyor!');
   await tick();
 
@@ -48,6 +59,8 @@ async function boot() {
     updatePlayer(player, dt);
     updateCamera(rig, dt);
     updateDayNight(dt, scene, player.pos());
+    updateNpcs(dt);
+    updateInteract();
     hud.update();
     updateMinimap();
   });
