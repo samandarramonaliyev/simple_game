@@ -15,6 +15,10 @@ import { spawnNpcs, updateNpcs } from './npc/npcs.js';
 import { initMissions } from './systems/missions.js';
 import { initTerminal } from './ui/terminal.js';
 import { initCombat } from './combat/combat.js';
+import { initProgression } from './systems/progression.js';
+import { initPanels } from './ui/panels.js';
+import { initQuests } from './systems/quests.js';
+import { initMinigames } from './combat/minigames.js';
 
 const $ = (id) => document.getElementById(id);
 
@@ -52,6 +56,10 @@ async function boot() {
   const missions = initMissions(scene);
   initTerminal();
   const combat = initCombat();
+  initProgression();
+  initPanels();
+  initQuests(scene);
+  initMinigames();
 
   setLoad(100, 'Tayyor!');
   await tick();
